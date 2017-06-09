@@ -46,8 +46,8 @@ eureka:
         management.context-path: ${management.context-path}
         management.port: ${management.port}
         instanceId: ${spring.application.name}:${random.value}
-      health-check-url-path: ${server.context-path}${management.context-path}/health
-      status-page-url-path: ${server.context-path}${management.context-path}/info
+      health-check-url-path: ${eureka.instance.hostname}:${management.port}/${server.context-path}${management.context-path}/health
+      status-page-url-path: ${eureka.instance.hostname}:${management.port}/${server.context-path}${management.context-path}/info
       homePageUrl: http://${eureka.instance.hostname}:${management.port}/
 
 management:
