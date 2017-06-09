@@ -71,7 +71,7 @@ oauth2settings:
     authenticationScheme: query
     clientAuthenticationScheme: header
     accessTokenUri: http://auth-service:9991/oauth/token
-    userAuthorizationUri: http://auth.zotona.com/auth/oauth/authorize
+    userAuthorizationUri: http://auth.zotona.com/oauth/authorize
     preEstablishedRedirectUri: http://demo.zotona.com/login/order
     registeredRedirectUri: http://demo.zotona.com/login/order
     useCurrentUri: false
