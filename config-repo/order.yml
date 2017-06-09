@@ -71,9 +71,9 @@ oauth2settings:
     authenticationScheme: query
     clientAuthenticationScheme: header
     accessTokenUri: http://auth-service:9991/oauth/token
-    userAuthorizationUri: http://dripka.com:9991/oauth/authorize
-    preEstablishedRedirectUri: http://dripka.com:8083/login/order
-    registeredRedirectUri: http://dripka.com:8083/login/order
+    userAuthorizationUri: http://auth.zotona.com/auth/oauth/authorize
+    preEstablishedRedirectUri: http://demo.zotona.com/login/order
+    registeredRedirectUri: http://demo.zotona.com/login/order
     useCurrentUri: false
   resource:
     userInfoUri: http://auth-service:9991/api/user/principal.json
