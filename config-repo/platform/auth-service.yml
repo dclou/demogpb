@@ -16,26 +16,7 @@ security:
   user:
     password: password
 
+
 eureka:
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    healthcheck:
-      enabled: true
-    serviceUrl:
-      defaultZone: http://discovery-service:8761/eureka/
   instance:
-    hostname: ${spring.application.name}
-    prefer-ip-address: true
-    lease-expiration-duration-in-seconds: 60
-    lease-renewal-interval-in-seconds: 30
-    statusPageUrl: http://${eureka.instance.hostname}:${management.port}${server.contextPath}${management.context-path}/info
-    secureHealthCheckUrl: http://${eureka.instance.hostname}:${management.port}${server.contextPath}${management.context-path}/health
-    homePageUrl: http://${eureka.instance.hostname}:${server.port}/
-    securePort: ${server.port}
-    securePortEnabled: false
-    nonSecurePortEnabled: true
-    metadataMap:
-      management.context-path: ${server.contextPath}${management.context-path}
-      management.port: ${management.port}
-      instanceId: ${spring.application.name}:${random.value}
+    prefer-ip-address: false
