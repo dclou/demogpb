@@ -1,5 +1,7 @@
 package org.dclou.example.demogpb.order.config;
 
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -19,6 +21,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.CompositeFilter;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     OAuth2ClientContext oauth2ClientContext;
+
+    private static class DummyCommand extends HystrixCommand<Void> {
+        DummyCommand() {
+            super(HystrixCommandGroupKey.Factory.asKey("Dummy"));
+        }
+
+        @Override
+        protected Void run() throws Exception {
+            return null;
+        }
+    }
+
+    @PostConstruct
+    public void workaround() {
+        new DummyCommand().execute();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
