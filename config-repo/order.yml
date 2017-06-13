@@ -1,6 +1,6 @@
 info:
   version: 1.0.0
-  component: микросервис "Управление заказами"
+  component: микросервис "Управления заказами"
   
 logging:
   level.org.dclou.example.demogpb: TRACE
