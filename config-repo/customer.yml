@@ -3,14 +3,18 @@ info:
   component: микросервис "Управление клиентами"
 
 logging:
-  level.org.dclou.example.demogpb: TRACE
-  level.org.springframework.security: DEBUG
+  level:
+    org.dclou.example.demogpb: TRACE
+    org.springframework.security: DEBUG
 
 spring:
   logging:
     pattern:
       console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
   sleuth:
+    enabled: true
+    stream:
+      enabled: true
     sampler:
       percentage: 1
   rabbitmq:
