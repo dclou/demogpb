@@ -1,5 +1,6 @@
 package org.dclou.example.demogpb.order.config;
 
+import com.google.common.base.Predicates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,9 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                //.apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("org.dclou.example.demogpb.order"))
+                //.apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
                 .paths(PathSelectors.any())
                 .build()
                 .pathProvider(new RelativePathProvider(servletContext)) ;
