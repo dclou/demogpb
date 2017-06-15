@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE logback>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/base.xml" />
     <springProperty scope="context" name="appName" source="spring.application.name"/>
-    <springProperty scope="context" name="FLUENT_LOG_PATTERN" source="spring.logging.pattern.console"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -11,19 +9,15 @@
         </encoder>
     </appender>
 
-<!-- https://logback.qos.ch/manual/layouts.html -->
-    <appender name="FLUENT" class="ch.qos.logback.more.appenders.FluentLogbackAppender">
+    <appender name="FLUENT" class="ch.qos.logback.more.appenders.DataFluentAppender">
         <tag>${appName}</tag>
         <label>normal</label>
         <remoteHost>fluentd</remoteHost>
         <port>24224</port>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>${FLUENT_LOG_PATTERN}</pattern>
-        </layout>
     </appender>
 
     <root>
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FLUENT"/>
     </root>

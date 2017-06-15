@@ -89,7 +89,7 @@ public class CustomerClient {
 			url = "http://" + customerServiceHost + ":" + customerServicePort
 					+ "/api/customer/";
 		}
-		log.trace("Customer: URL {} ", url);
+		log.debug("Customer: URL {} ", url);
 		return url;
 
 	}
