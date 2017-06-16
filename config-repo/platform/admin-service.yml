@@ -18,18 +18,13 @@ management:
 #management.context-path: /mgmt
 #endpoints.health.path: /health
 
-turbine:
-  aggregator:
-    clusterConfig: ORDER,CUSTOMER,CATALOG
-  appConfig: order,customer,catalog
-  instanceUrlSuffix: /mgmt/hystrix.stream
-
 spring:
   boot:
     admin:
       turbine:
         clusters: ORDER,CUSTOMER,CATALOG
         enabled: true
+        location: http://turbine-service:8485/
       context-path: /admin
       routes:
         endpoints: env,metrics,trace,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
