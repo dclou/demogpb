@@ -34,7 +34,7 @@ spring:
       turbine:
         clusters: default
         enabled: true
-        location: http://turbine-service:8485/
+        location: http://turbine-service:8485/turbine.stream
       context-path: /admin
       routes:
         endpoints: env,metrics,trace,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
