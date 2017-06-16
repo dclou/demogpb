@@ -18,6 +18,16 @@ management:
 #management.context-path: /mgmt
 #endpoints.health.path: /health
 
+zuul:
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+  routes:
+    turbine:
+      path: /admin/api/turbine/stream/**
+      
+
 spring:
   boot:
     admin:
