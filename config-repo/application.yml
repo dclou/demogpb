@@ -46,10 +46,9 @@ eureka:
         management.context-path: ${management.context-path}
         management.port: ${management.port}
         instanceId: ${spring.application.name}:${random.value}
-      health-check-url-path: ${server.context-path}${management.context-path}/health
-      status-page-url-path: ${server.context-path}${management.context-path}/info
       homePageUrl: http://${eureka.instance.hostname}:${management.port}/
-
+      status-page-url-path: ${management.context-path}/info
+      health-check-url-path: ${management.context-path}/health
 management:
   port: ${server.port}
   security.enabled: false
@@ -59,7 +58,7 @@ management:
 security:
   basic:
     enabled: false
-  ignored: ${management.context-path},${management.context-path}/**
+  ignored: ${management.context-path},${management.context-path}/**,/mgmt/hystrix.stream
 
 hystrix:
   command:

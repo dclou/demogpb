@@ -1,0 +1,31 @@
+version: '3'
+
+#networks:
+#  default:
+#    external:
+#      name: platform_default
+
+services:
+  demogpb-customer:
+    image: customer:latest
+    environment:
+      JAVA_MEM: "-Xms250m -Xmx512m -XX:CompressedClassSpaceSize=300m -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:-TieredCompilation -Xss256k -XX:+UseG1GC -XX:+UseStringDeduplication"
+      JAVA_EXT: "-Djava.security.egd=file:/dev/./urandom"
+    ports:
+      - "8082:8082"
+
+  demogpb-catalog:
+    image: catalog:latest
+    environment:
+      JAVA_MEM: "-Xms250m -Xmx512m -XX:CompressedClassSpaceSize=300m -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:-TieredCompilation -Xss256k -XX:+UseG1GC -XX:+UseStringDeduplication"
+      JAVA_EXT: "-Djava.security.egd=file:/dev/./urandom"
+    ports:
+      - "8081:8081"
+
+  demogpb-order:
+    image: order:latest
+    environment:
+      JAVA_MEM: "-Xms250m -Xmx512m -XX:CompressedClassSpaceSize=300m -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -XX:-TieredCompilation -Xss256k -XX:+UseG1GC -XX:+UseStringDeduplication"
+      JAVA_EXT: "-Djava.security.egd=file:/dev/./urandom"
+    ports:
+      - "8083:8083"

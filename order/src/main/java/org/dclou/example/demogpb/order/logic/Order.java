@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ORDERTABLE")
-class Order {
+public class Order {
 
 	@Id
 	@GeneratedValue

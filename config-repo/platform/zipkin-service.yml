@@ -14,6 +14,10 @@
 #            - X-Span-Name
 #            - X-Process-Id
 # sleuth async messaging
+info:
+  version: 1.0.0
+  description: подсистема "Аудита вызовов микросервисов"
+
 spring:
   sleuth:
     enabled: false

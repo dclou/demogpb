@@ -1,6 +1,23 @@
+info:
+  version: 1.0.0
+  description: подсистема "Маршрутизации вызовов"
+
 server:
   context-path:
   port: 8080
+
+  ssl:
+    enabled: false
+    #key-store: classpath:server.jks
+    #key-store-password: password
+    #key-password: password
+    # Problem with trust-store properties?
+    #
+    # Instead use: java -Djavax.net.debug=ssl -Djavax.net.ssl.trustStore=src/main/resources/truststore.jks -Djavax.net.ssl.trustStorePassword=password -jar build/libs/*.jar
+    #
+    # trust-store: classpath:truststore.jks
+    #trust-store: src/main/resources/truststore.jks
+    #trust-store-password: password
 
 eureka:
   instance:

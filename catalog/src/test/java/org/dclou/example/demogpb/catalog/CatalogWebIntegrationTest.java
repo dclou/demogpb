@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CatalogApp.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = CatalogApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class CatalogWebIntegrationTest {
 

@@ -1,6 +1,5 @@
 package org.dclou.example.demogpb.order.logic;
 
-import org.dclou.example.demogpb.order.OrderApp;
 import org.dclou.example.demogpb.order.OrderTestApp;
 import org.dclou.example.demogpb.order.clients.CatalogClient;
 import org.dclou.example.demogpb.order.clients.Customer;

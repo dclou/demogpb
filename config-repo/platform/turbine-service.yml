@@ -1,0 +1,13 @@
+server:
+  context-path:
+  port: 8485
+
+eureka:
+  instance:
+      prefer-ip-address: false
+
+turbine:
+  aggregator:
+  appConfig: order,customer,catalog
+  clusterNameExpression: new String('default')
+  instanceUrlSuffix: /mgmt/hystrix.stream

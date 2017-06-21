@@ -3,16 +3,10 @@ spring:
     proxyTargetClass: true
   application:
     name: order
-
   cloud:
     config:
       enabled: true
       uri: http://config-service:8888
-      #profile: production
-      #label: master
-#      discovery:
-#              enabled: true
-#              service-id: config-service
       failFast: false
       retry:
         initialInterval: 3000

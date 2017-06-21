@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Authorization required</title>
+</head>
+<body>
+<h1 layout:fragment="header"></h1>
+<div layout:fragment="content" class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <b>Authorization required</b>
+        </div>
+
+        <div class="panel-body">
+            <a href="/login/order">Click here to authenticate</a>
+        </div>
+
+        <!--<div class="panel-footer">
+        </div>-->
+    </div>
+</div>
+</body>
+</html>

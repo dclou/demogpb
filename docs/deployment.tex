@@ -1,0 +1,73 @@
+\pdfoutput=1
+\documentclass[tikz,12pt,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usetikzlibrary{arrows,fit,matrix,positioning}
+\begin{document}
+	\begin{tikzpicture}[node distance = 1em]
+		\tikzset{
+			block/.style = {rectangle, draw, solid, rounded corners, minimum height = 2em}
+		}
+		\node(host)[block]{Хостовая машина};
+	 	\node(proxy)[block, align=center, below = of host]{Обратный прокси \\ (Nginx)};
+		\node(masters)[label=above:Виртуальные машины, draw, dotted, rounded corners, matrix,column sep = 1ex,below left = of proxy] {
+			\node[block]{Master1}; &
+			\node[minimum height = 2em]{,}; &
+			\node[block]{Master2}; &
+			\node[minimum height = 2em]{\dots}; &
+			\node[block]{MasterN};\\
+		};
+		\node(workers)[label=above:Виртуальные машины, draw, dotted, rounded corners, matrix,column sep = 1ex,below right = of proxy] {
+			\node[block]{Worker1}; &
+			\node[minimum height = 2em]{,}; &
+			\node[block]{Worker2}; &
+			\node[minimum height = 2em]{\dots}; &
+			\node[block]{WorkerN};\\
+		};
+		\node(swarm)[block, fit=(masters)(workers), text height=1.5em]{Swarm-кластер};
+		\node(ingress)[block, below left = of swarm.south] {Ingress-сеть};
+		\node(dclou)[block, below right = of swarm.south]{Dclou-сеть};
+		\path[->]
+			(host) edge (proxy)
+			(proxy) edge (swarm)
+		;
+		\path[draw]
+			(swarm) |- (ingress)
+			(swarm) |- (dclou)
+		;
+		\node(app)[label=above:Бизнес-сервисы, below = of workers, draw, dotted, rounded corners, matrix,yshift=-3em, row sep = 1ex]{
+			\node(order)[block, minimum width = 5em]{Order}; \\
+			\node(catalog)[block, minimum width = 5em]{Catalog}; \\
+			\node(customer)[block, minimum width = 5em]{Customer}; \\
+		};
+		
+		\node(platform)[label=above:Сервисы платформы, below = of masters, draw, dotted, rounded corners, matrix,yshift=-3em, row sep = 1ex]{
+			\node(auth)[block, minimum width = 5em]{Auth}; \\
+			\node(admin)[block, minimum width = 5em]{Admin}; \\
+			\node(kibana)[block, minimum width = 5em]{Kibana}; \\
+			\node(config)[block, minimum width = 5em]{Config}; \\
+			\node(gateway)[block, minimum width = 5em]{Gateway}; \\
+			\node(discovery)[block, minimum width = 5em]{Discovery}; \\
+			\node(portainer)[block, minimum width = 5em]{Portainer}; \\
+		};
+	
+		\path[draw, color=green, thick]
+			(dclou) |- ([yshift=-1ex]order.west)
+			(dclou) |- ([yshift=-1ex]catalog.west)
+			(dclou) |- ([yshift=-1ex]customer.west)
+			(dclou) |- ([yshift=-1ex]auth.east)
+			(dclou) |- ([yshift=-1ex]admin.east)
+			(dclou) |- ([yshift=-1ex]kibana.east)
+			(dclou) |- ([yshift=-1ex]config.east)
+			(dclou) |- ([yshift=-1ex]gateway.east)
+			(dclou) |- ([yshift=-1ex]discovery.east)
+			(dclou) |- ([yshift=-1ex]portainer.east)
+		;
+	
+		\path[draw, color=red, thick]
+			(ingress) |- ([yshift=1ex] gateway.east)
+			(ingress) |- ([yshift=1ex] admin.east)
+		;
+	\end{tikzpicture}
+\end{document}

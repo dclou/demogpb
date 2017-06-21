@@ -21,9 +21,7 @@ import java.util.Collection;
 class OrderController {
 
 	private OrderRepository orderRepository;
-
 	private OrderService orderService;
-
 	private CustomerClient customerClient;
 	private CatalogClient catalogClient;
 
@@ -31,7 +29,6 @@ class OrderController {
 	private OrderController(OrderService orderService,
 			OrderRepository orderRepository, CustomerClient customerClient,
 			CatalogClient catalogClient) {
-		super();
 		this.orderRepository = orderRepository;
 		this.customerClient = customerClient;
 		this.catalogClient = catalogClient;
@@ -106,7 +103,7 @@ class OrderController {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ModelAndView post(Order order) {
-		//order = orderService.order(order);
+		order = orderService.order(order);
 		return  new ModelAndView("redirect:/");
 	}
 
@@ -126,5 +123,4 @@ class OrderController {
 
 		return new ModelAndView("redirect:/");
 	}
-
 }

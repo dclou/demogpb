@@ -26,7 +26,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CustomerApp.class, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = CustomerApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 public class CustomerWebIntegrationTest {
 

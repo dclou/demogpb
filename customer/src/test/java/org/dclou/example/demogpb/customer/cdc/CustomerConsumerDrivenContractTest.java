@@ -1,6 +1,6 @@
 package org.dclou.example.demogpb.customer.cdc;
 
-import org.dclou.example.demogpb.customer.CustomerApp;
+import org.dclou.example.demogpb.customer.CustomerApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CustomerApp.class, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = CustomerApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 public class CustomerConsumerDrivenContractTest {
 

@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CatalogApp.class, webEnvironment = WebEnvironment.NONE)
+@SpringBootTest(classes = CatalogApplication.class, webEnvironment = WebEnvironment.NONE)
 @ActiveProfiles("test")
 public class RepositoryTest {
 

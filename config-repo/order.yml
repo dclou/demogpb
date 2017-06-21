@@ -1,12 +1,55 @@
+info:
+  version: 1.0.0
+  component: микросервис "Управления заказами"
+  
+logging:
+  level:
+    org.dclou.example.demogpb: TRACE
+    org.springframework.security: DEBUG
+
 spring:
+  logging:
+    pattern:
+      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+  sleuth:
+    enabled: true
+    stream:
+      enabled: true
+    sampler:
+      percentage: 1
+  rabbitmq:
+    addresses: rabbit-mon
+    username: admin
+    password: admin
+    virtual-host: rabbit-mon
   data:
     rest:
       basePath: /api
+  cloud:
+    inetutils:
+      preferred-networks:
+        - 10.0
+      ignored-interfaces:
+        - eth2
+        - eth2@*
 
-logging:
-  level.org.dclou.example.demogpb.order.clients: TRACE
-  level.org.springframework.security: TRACE
+encrypt:
+  failOnError: false
 
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
+  instance:
+    hostname: ${spring.application.name}
+    metadataMap.instanceId: ${spring.application.name}:${random.value}
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 60
+    lease-renewal-interval-in-seconds: 30
 
 management:
   security:
@@ -14,65 +57,33 @@ management:
   trace:
     include: request_headers,response_headers,cookies,authorization_header,errors,path_info,path_translated,context_path,user_principal,parameters,query_string,auth_type,remote_address,session_id,remote_user
 
-
 server:
-  context-path:
   port: 8083
-  use-forward-headers: true
+  session:
+    cookie:
+      name: JSESSIONIDORDERSRV
 
 ribbon:
   eureka:
     enabled: true
 
-zuul:
-  #Set of service names not to consider for proxying automatically. By default all services in the discovery client will be proxied.
-  ignoredServices: '*'
-  add-proxy-headers: true
-  routes:
-    auth:
-      path: /auth/**
-      serviceId: auth-service
-      stripPrefix: false
-      sensitive-headers:
+oauth2settings:
+  client:
+    id: order-service
+    clientId: order-service
+    clientSecret: 123456
+    authenticationScheme: query
+    clientAuthenticationScheme: header
+    accessTokenUri: http://auth-service:9991/oauth/token
+    userAuthorizationUri: http://auth.zotona.com/oauth/authorize
+    preEstablishedRedirectUri: http://demo.zotona.com/login/order
+    registeredRedirectUri: http://demo.zotona.com/login/order
+    useCurrentUri: false
+  resource:
+    userInfoUri: http://auth-service:9991/api/user/principal.json
+    preferTokenInfo: true
 
 security:
-  enable-csrf: false
-  sessions: IF_REQUIRED
-  basic:
-    enabled: false
+  sessions: always
   user:
-    password: none
-  oauth2:
-#    sso:
-#      loginPath: /login
-    client:
-     client-id: web-app
-     clientSecret: mySecretKey
-     #clientAuthenticationScheme: form
-     accessTokenUri: http://auth-service/auth/oauth/token
-     userAuthorizationUri: /auth/oauth/authorize
-#     accessTokenUri: http://${spring.application.name}:${server.port}/auth/oauth/token
-#     userAuthorizationUri: http://${spring.application.name}:${server.port}/auth/oauth/authorize
-     #preEstablishedRedirectUri: http://${spring.application.name}:${server.port}/web-app/login
-     #scope: read
-     #registeredRedirectUri: http://${spring.application.name}:${server.port}/web-app/login
-     #useCurrentUri: false
-
-    resource:
-      #userInfoUri: http://${spring.application.name}:${server.port}/auth/user
-      jwt:
-        keyValue: |
-          -----BEGIN PUBLIC KEY-----
-          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAimUKhvBhsoeSM3HkIOP/Y3RXjvonBlZnLj8oO92TyAKG53lmAoK0wZ5MTZPsfrOz2Z7CeAp6mPhUANX2RUoFwVzG7rJmgWyqGmGFNBmtYL+uVqQ80TzWi5zyzXTxgVMWiCqqw/u4AeE1qhN8chnGwhUBnpgPAPd8v57mIwg0n5JxjdYe7pgHlpvt8ZXTXd1KBxB5K7WjNlCfMf75ZEeBaplxsSfJUwKbnHQKWcY3NnpjkVR8y4jviAbkOHmGMaliM7fcsLzbosBUPDQuNlvYdjPBRfH6MMPeXRW6On3u0Um9wIYmkQS+AEgHCq4UuLOnTTqqxnGkwFYeMAAXmRyMtQIDAQAB
-          -----END PUBLIC KEY-----
-
-
-
-#server:
-#  port: 6161
-#turbine:
-#  stream:
-#    port: 8989
-#  appConfig: notification-service,event-service,profile-service
-#  clusterNameExpression: new String("default")
-#  combineHostPort: true
+    password: password

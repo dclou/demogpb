@@ -43,7 +43,6 @@ public class CustomerClient {
 			@Value("${customer.service.port:8080}") long customerServicePort,
 			@Value("${ribbon.eureka.enabled:false}") boolean useRibbon,
 			RestTemplate restTemplate) {
-		super();
 		this.restTemplate = restTemplate;
 		this.customerServiceHost = customerServiceHost;
 		this.customerServicePort = customerServicePort;
@@ -82,15 +81,15 @@ public class CustomerClient {
 	private String customerURL() {
 		String url;
 		ServiceInstance instance = loadBalancer.choose("CUSTOMER");
-		if (useRibbon) {
+		if (useRibbon && instance != null) {
 			url = "http://" + instance.getHost() + ":" + instance.getPort()
-					+ "/customer/";
+					+ "/api/customer/";
 
 		} else {
 			url = "http://" + customerServiceHost + ":" + customerServicePort
-					+ "/customer/";
+					+ "/api/customer/";
 		}
-		log.trace("Customer: URL {} ", url);
+		log.debug("Customer: URL {} ", url);
 		return url;
 
 	}
