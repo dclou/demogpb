@@ -10,7 +10,7 @@
     </appender>
 
     <root>
-        <level value="info"/>
+        <level value="warn"/>
         <appender-ref ref="STDOUT"/>
     </root>
 
