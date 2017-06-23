@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,7 +32,8 @@ import static org.junit.Assert.*;
 @ActiveProfiles("test")
 public class OrderWebIntegrationTest {
 
-	private RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private TestRestTemplate restTemplate;
 
 	@Value("${server.port}")
 	private long serverPort;

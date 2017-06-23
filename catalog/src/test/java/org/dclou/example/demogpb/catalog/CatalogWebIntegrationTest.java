@@ -26,14 +26,6 @@ public class CatalogWebIntegrationTest {
 
 	@Autowired
 	private ItemRepository itemRepository;
-/*
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private FilterChainProxy springSecurityFilterChain;
-*/
 
 	@Value("${local.server.port}")
 	private int serverPort;
