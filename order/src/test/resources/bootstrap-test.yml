@@ -1,6 +1,11 @@
 spring:
-  application:
-    name: order
+  data:
+    rest:
+      basePath: /api
+  sleuth:
+    enabled: false
+    stream:
+      enabled: false
 
   cloud:
     config:

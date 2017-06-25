@@ -6,6 +6,7 @@ import org.dclou.example.demogpb.order.clients.Customer;
 import org.dclou.example.demogpb.order.clients.CustomerClient;
 import org.dclou.example.demogpb.order.clients.Item;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import java.util.Collection;
 
 @Controller
 @Api(value = "Order")
+@Profile("!test")
 class OrderController {
 
 	private OrderRepository orderRepository;
@@ -54,7 +56,7 @@ class OrderController {
 			@ApiResponse(code = 404, message = "Not Found"),
 			@ApiResponse(code = 500, message = "Failure")})
 	public ModelAndView orderList() {
-		return new ModelAndView("orderlist", "orders",
+			return new ModelAndView("orderlist", "orders",
 				orderRepository.findAll());
 	}
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
@@ -23,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Component
+@Profile("!test")
 public class CustomerClient {
 
 	private final Logger log = LoggerFactory.getLogger(CustomerClient.class);

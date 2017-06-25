@@ -1,10 +1,10 @@
 package org.dclou.example.demogpb.order.logic;
 
 import org.dclou.example.demogpb.order.OrderTestApp;
-import org.dclou.example.demogpb.order.clients.CatalogClient;
+import org.dclou.example.demogpb.order.clients.CatalogStub;
 import org.dclou.example.demogpb.order.clients.Customer;
-import org.dclou.example.demogpb.order.clients.CustomerClient;
 import org.dclou.example.demogpb.order.clients.Item;
+import org.dclou.example.demogpb.order.clients.CustomerStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
@@ -39,10 +38,10 @@ public class OrderWebIntegrationTest {
 	private long serverPort;
 
 	@Autowired
-	private CatalogClient catalogClient;
+	private CatalogStub catalogClient;
 
 	@Autowired
-	private CustomerClient customerClient;
+	private CustomerStub customerClient;
 
 	@Autowired
 	private OrderRepository orderRepository;
@@ -53,8 +52,11 @@ public class OrderWebIntegrationTest {
 
 	@Before
 	public void setup() {
-		item = catalogClient.findAll().iterator().next();
-		customer = customerClient.findAll().iterator().next();
+
+        String itemList = restTemplate.getForObject(orderURL() + "/catalog", String.class);
+        item = catalogClient.getAll().iterator().next();
+        customer = customerClient.getAll().iterator().next();
+
 		assertEquals("Eberhard", customer.getFirstname());
 	}
 
@@ -63,10 +65,11 @@ public class OrderWebIntegrationTest {
 		try {
 			Iterable<Order> orders = orderRepository.findAll();
 			assertTrue(StreamSupport.stream(orders.spliterator(), false)
-					.noneMatch(o -> (o.getCustomerId() == customer.getCustomerId())));
-			ResponseEntity<String> resultEntity = restTemplate.getForEntity(orderURL(), String.class);
-			assertTrue(resultEntity.getStatusCode().is2xxSuccessful());
-			String orderList = resultEntity.getBody();
+                    .anyMatch(o -> (o.getCustomerId() == customer.getCustomerId())));
+			//ResponseEntity<String> resultEntity = restTemplate.getForEntity(orderURL(), String.class);
+            String orderList = restTemplate.getForObject(orderURL(), String.class);
+			//assertTrue(resultEntity.getStatusCode().is2xxSuccessful());
+			//String orderList = resultEntity.getBody();
 			assertFalse(orderList.contains("Eberhard"));
 			Order order = new Order(customer.getCustomerId());
 			order.addLine(42, item.getItemId());
