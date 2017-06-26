@@ -1,13 +1,16 @@
 package org.dclou.example.demogpb.order.logic;
 
 import org.dclou.example.demogpb.order.OrderTestApp;
-import org.dclou.example.demogpb.order.clients.CatalogStub;
+import org.dclou.example.demogpb.order.clients.CatalogClient;
 import org.dclou.example.demogpb.order.clients.Customer;
+import org.dclou.example.demogpb.order.clients.CustomerClient;
 import org.dclou.example.demogpb.order.clients.Item;
-import org.dclou.example.demogpb.order.clients.CustomerStub;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,12 +27,21 @@ import org.springframework.web.util.UriTemplate;
 import java.net.URI;
 import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.*;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = OrderTestApp.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 public class OrderWebIntegrationTest {
+
+	private ClientAndServer mockServerCatalog;
+	private ClientAndServer mockServerCustomer;
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -38,10 +50,10 @@ public class OrderWebIntegrationTest {
 	private long serverPort;
 
 	@Autowired
-	private CatalogStub catalogClient;
+	private CatalogClient catalogClient;
 
 	@Autowired
-	private CustomerStub customerClient;
+	private CustomerClient customerClient;
 
 	@Autowired
 	private OrderRepository orderRepository;
@@ -51,16 +63,48 @@ public class OrderWebIntegrationTest {
 	private Customer customer;
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+
+        mockServerCatalog = startClientAndServer(8081);
+
+        // given
+        mockServerCatalog
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/api/catalog/")
+                )
+                .respond(
+                        response()
+                                .withHeaders(
+                                        new Header(CONTENT_TYPE.toString(), "application/json")
+                                )
+                                .withBody("" +
+                                        "{" + System.getProperty("line.separator") +
+                                        "    \"id\": \"1\"," + System.getProperty("line.separator") +
+                                        "    \"name\": \"iPod\"," + System.getProperty("line.separator") +
+                                        "    \"price\": \"42.0\"" + System.getProperty("line.separator") +
+                                        "}")
+                );
+
+        item = catalogClient.findAll().iterator().next();
+
+        mockServerCustomer = startClientAndServer(8082);
 
         String itemList = restTemplate.getForObject(orderURL() + "/catalog", String.class);
-        item = catalogClient.getAll().iterator().next();
-        customer = customerClient.getAll().iterator().next();
+        customer = customerClient.findAll().iterator().next();
 
 		assertEquals("Eberhard", customer.getFirstname());
 	}
 
-	@Test
+    @After
+    public void stopMockServer() {
+        mockServerCatalog.stop();
+        mockServerCustomer.stop();
+    }
+
+
+    @Test
 	public void IsOrderListReturned() {
 		try {
 			Iterable<Order> orders = orderRepository.findAll();

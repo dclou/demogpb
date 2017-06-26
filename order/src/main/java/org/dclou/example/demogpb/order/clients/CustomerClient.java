@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Component
-@Profile("!test")
 public class CustomerClient {
 
 	private final Logger log = LoggerFactory.getLogger(CustomerClient.class);

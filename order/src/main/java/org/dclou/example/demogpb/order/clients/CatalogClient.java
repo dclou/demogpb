@@ -59,6 +59,7 @@ public class CatalogClient {
 
 	//@HystrixCommand(fallbackMethod = "getItemsCache", commandProperties = {@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2")})
 	public Collection<Item> findAll() {
+		Item i = restTemplate.getForObject(catalogURL(), Item.class);
 		PagedResources<Item> pagedResources = restTemplate.getForObject(
 				catalogURL(), ItemPagedResources.class);
 		this.itemsCache = pagedResources.getContent();

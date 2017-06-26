@@ -9,12 +9,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Item extends ResourceSupport {
 
-	private String name;
-
-	private double price;
-
 	@JsonProperty("id")
 	private long itemId;
+
+	@JsonProperty("name")
+	private String name;
+
+	@JsonProperty("price")
+	private double price;
 
 	public Item() {
 		super();

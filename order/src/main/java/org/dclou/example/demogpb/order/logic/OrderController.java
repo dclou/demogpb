@@ -19,7 +19,6 @@ import java.util.Collection;
 
 @Controller
 @Api(value = "Order")
-@Profile("!test")
 class OrderController {
 
 	private OrderRepository orderRepository;

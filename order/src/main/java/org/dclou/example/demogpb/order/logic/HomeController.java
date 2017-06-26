@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 @Controller
-@Profile("!test")
 class HomeController {
 
 	@Autowired
