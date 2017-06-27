@@ -1,27 +1,18 @@
 package org.dclou.example.demogpb.order.clients;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.context.annotation.Profile;
-import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.hal.Jackson2HalModule;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Component
 public class CustomerClient {
@@ -34,9 +25,9 @@ public class CustomerClient {
 	private boolean useRibbon;
 	private LoadBalancerClient loadBalancer;
 
-	static class CustomerPagedResources extends PagedResources<Customer> {
+	static class CustomerPagedResources extends PagedResources<Customer> { }
 
-	}
+	public static class CustomerList extends ArrayList<Customer> { }
 
 	@Autowired
 	public CustomerClient(
@@ -59,7 +50,7 @@ public class CustomerClient {
 		return true;
 //		try {
 //			ResponseEntity<String> entity = getRestTemplate().getForEntity(
-//					customerURL() + customerId, String.class);
+//					customerURL() + "/" + customerId, String.class);
 //			return entity.getStatusCode().is2xxSuccessful();
 //		} catch (final HttpClientErrorException e) {
 //			if (e.getStatusCode().value() == 404)
@@ -74,9 +65,13 @@ public class CustomerClient {
 	}
 
 	public Collection<Customer> findAll() {
+/*
 		PagedResources<Customer> pagedResources = getRestTemplate()
 				.getForObject(customerURL(), CustomerPagedResources.class);
 		return pagedResources.getContent();
+*/
+		List<Customer> l = restTemplate.getForObject(customerURL(), CustomerList.class);
+		return l;
 	}
 
 	private String customerURL() {
@@ -84,11 +79,11 @@ public class CustomerClient {
 		ServiceInstance instance = loadBalancer.choose("CUSTOMER");
 		if (useRibbon && instance != null) {
 			url = "http://" + instance.getHost() + ":" + instance.getPort()
-					+ "/api/customer/";
+					+ "/api/customer";
 
 		} else {
 			url = "http://" + customerServiceHost + ":" + customerServicePort
-					+ "/api/customer/";
+					+ "/api/customer";
 		}
 		log.debug("Customer: URL {} ", url);
 		return url;
@@ -96,7 +91,7 @@ public class CustomerClient {
 	}
 
 	public Customer getOne(long customerId) {
-		return getRestTemplate().getForObject(customerURL() + customerId,
+		return getRestTemplate().getForObject(customerURL() + "/" + customerId,
 				Customer.class);
 	}
 }

@@ -40,10 +40,17 @@ import static org.mockserver.model.HttpResponse.response;
 @ActiveProfiles("test")
 public class OrderWebIntegrationTest {
 
-	private ClientAndServer mockServerCatalog;
-	private ClientAndServer mockServerCustomer;
 
-	@Autowired
+    @Value("${catalog.service.port}")
+    private int catalogServerPort;
+
+    @Value("${customer.service.port}")
+    private int customerServerPort;
+
+    private ClientAndServer mockServerCatalog;
+    private ClientAndServer mockServerCustomer;
+
+    @Autowired
 	private TestRestTemplate restTemplate;
 
 	@Value("${server.port}")
@@ -62,17 +69,17 @@ public class OrderWebIntegrationTest {
 
 	private Customer customer;
 
-	@Before
-	public void setup() throws Exception {
-
-        mockServerCatalog = startClientAndServer(8081);
+    @Before
+    public void launchMockServers() {
+        // Items
+        mockServerCatalog = startClientAndServer(catalogServerPort);
 
         // given
         mockServerCatalog
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/api/catalog/")
+                                .withPath("/api/catalog")
                 )
                 .respond(
                         response()
@@ -80,36 +87,155 @@ public class OrderWebIntegrationTest {
                                         new Header(CONTENT_TYPE.toString(), "application/json")
                                 )
                                 .withBody("" +
-                                        "{" + System.getProperty("line.separator") +
-                                        "    \"id\": \"1\"," + System.getProperty("line.separator") +
-                                        "    \"name\": \"iPod\"," + System.getProperty("line.separator") +
-                                        "    \"price\": \"42.0\"" + System.getProperty("line.separator") +
+                                        "["+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":1,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"iPod\","+ System.getProperty("line.separator") +
+                                        "      \"price\":42.0"+ System.getProperty("line.separator") +
+                                        "   },"+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":2,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"iPod touch\","+ System.getProperty("line.separator") +
+                                        "      \"price\":21.0"+ System.getProperty("line.separator") +
+                                        "   },"+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":3,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"iPod nano\","+ System.getProperty("line.separator") +
+                                        "      \"price\":1.0"+ System.getProperty("line.separator") +
+                                        "   },"+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":4,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"Apple TV\","+ System.getProperty("line.separator") +
+                                        "      \"price\":100.0"+ System.getProperty("line.separator") +
+                                        "   }"+ System.getProperty("line.separator") +
+                                        "]")
+                );
+        mockServerCatalog
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/api/catalog/1")
+                )
+                .respond(
+                        response()
+                                .withHeaders(
+                                        new Header(CONTENT_TYPE.toString(), "application/json")
+                                )
+                                .withBody("" +
+                                        "{"+ System.getProperty("line.separator") +
+                                        "   \"id\":1,"+ System.getProperty("line.separator") +
+                                        "   \"name\":\"iPod\","+ System.getProperty("line.separator") +
+                                        "   \"price\":42.0"+ System.getProperty("line.separator") +
                                         "}")
                 );
 
+        // Customers
+        mockServerCustomer = startClientAndServer(customerServerPort);
+
+        // given
+        mockServerCustomer
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/api/customer")
+                )
+                .respond(
+                        response()
+                                .withHeaders(
+                                        new Header(CONTENT_TYPE.toString(), "application/json")
+                                )
+                                .withBody("" +
+                                        "["+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":1,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"Wolff\","+ System.getProperty("line.separator") +
+                                        "      \"firstname\":\"Eberhard\","+ System.getProperty("line.separator") +
+                                        "      \"email\":\"eberhard.wolff@gmail.com\","+ System.getProperty("line.separator") +
+                                        "      \"street\":\"Unter den Linden\","+ System.getProperty("line.separator") +
+                                        "      \"city\":\"Berlin\""+ System.getProperty("line.separator") +
+                                        "   },"+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":2,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"Johnson\","+ System.getProperty("line.separator") +
+                                        "      \"firstname\":\"Rod\","+ System.getProperty("line.separator") +
+                                        "      \"email\":\"rod@somewhere.com\","+ System.getProperty("line.separator") +
+                                        "      \"street\":\"Market Street\","+ System.getProperty("line.separator") +
+                                        "      \"city\":\"San Francisco\""+ System.getProperty("line.separator") +
+                                        "   },"+ System.getProperty("line.separator") +
+                                        "   {"+ System.getProperty("line.separator") +
+                                        "      \"id\":3,"+ System.getProperty("line.separator") +
+                                        "      \"name\":\"Hoeller\","+ System.getProperty("line.separator") +
+                                        "      \"firstname\":\"Juergen\","+ System.getProperty("line.separator") +
+                                        "      \"email\":\"springjuergen@twitter.com\","+ System.getProperty("line.separator") +
+                                        "      \"street\":\"Schlossallee\","+ System.getProperty("line.separator") +
+                                        "      \"city\":\"Linz\""+ System.getProperty("line.separator") +
+                                        "   }"+ System.getProperty("line.separator") +
+                                        "]")
+                );
+        mockServerCustomer
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/api/customer/1")
+                )
+                .respond(
+                        response()
+                                .withHeaders(
+                                        new Header(CONTENT_TYPE.toString(), "application/json")
+                                )
+                                .withBody("" +
+                                        "{"+ System.getProperty("line.separator") +
+                                        "   \"id\":1,"+ System.getProperty("line.separator") +
+                                        "   \"name\":\"Wolff\","+ System.getProperty("line.separator") +
+                                        "   \"firstname\":\"Eberhard\","+ System.getProperty("line.separator") +
+                                        "   \"email\":\"eberhard.wolff@gmail.com\","+ System.getProperty("line.separator") +
+                                        "   \"street\":\"Unter den Linden\","+ System.getProperty("line.separator") +
+                                        "   \"city\":\"Berlin\""+ System.getProperty("line.separator") +
+                                        "}")
+                );
+        mockServerCustomer
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/api/customer/2")
+                )
+                .respond(
+                        response()
+                                .withHeaders(
+                                        new Header(CONTENT_TYPE.toString(), "application/json")
+                                )
+                                .withBody("" +
+                                        "{"+ System.getProperty("line.separator") +
+                                        "   \"id\":2,"+ System.getProperty("line.separator") +
+                                        "   \"name\":\"Johnson\","+ System.getProperty("line.separator") +
+                                        "   \"firstname\":\"Rod\","+ System.getProperty("line.separator") +
+                                        "   \"email\":\"rod@somewhere.com\","+ System.getProperty("line.separator") +
+                                        "   \"street\":\"Market Street\","+ System.getProperty("line.separator") +
+                                        "   \"city\":\"San Francisco\""+ System.getProperty("line.separator") +
+                                        "}")
+                );
+    }
+
+
+	@Before
+	public void setup() throws Exception {
         item = catalogClient.findAll().iterator().next();
-
-        mockServerCustomer = startClientAndServer(8082);
-
-        String itemList = restTemplate.getForObject(orderURL() + "/catalog", String.class);
         customer = customerClient.findAll().iterator().next();
-
 		assertEquals("Eberhard", customer.getFirstname());
 	}
 
-    @After
-    public void stopMockServer() {
+	@After
+    public void StopServers() {
         mockServerCatalog.stop();
         mockServerCustomer.stop();
     }
-
 
     @Test
 	public void IsOrderListReturned() {
 		try {
 			Iterable<Order> orders = orderRepository.findAll();
 			assertTrue(StreamSupport.stream(orders.spliterator(), false)
-                    .anyMatch(o -> (o.getCustomerId() == customer.getCustomerId())));
+                    .noneMatch(o -> (o.getCustomerId() == customer.getCustomerId())));
 			//ResponseEntity<String> resultEntity = restTemplate.getForEntity(orderURL(), String.class);
             String orderList = restTemplate.getForObject(orderURL(), String.class);
 			//assertTrue(resultEntity.getStatusCode().is2xxSuccessful());

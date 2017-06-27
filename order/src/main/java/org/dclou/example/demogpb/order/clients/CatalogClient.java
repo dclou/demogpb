@@ -12,16 +12,18 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class CatalogClient {
 
 	private final Logger log = LoggerFactory.getLogger(CatalogClient.class);
 
-	public static class ItemPagedResources extends PagedResources<Item> {
+	public static class ItemPagedResources extends PagedResources<Item> { }
 
-	}
+	public static class ItemList extends ArrayList<Item> { }
 
 	private RestTemplate restTemplate;
 	private String catalogServiceHost;
@@ -59,11 +61,14 @@ public class CatalogClient {
 
 	//@HystrixCommand(fallbackMethod = "getItemsCache", commandProperties = {@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2")})
 	public Collection<Item> findAll() {
-		Item i = restTemplate.getForObject(catalogURL(), Item.class);
+		List<Item> l = restTemplate.getForObject(catalogURL(), ItemList.class);
+/*
 		PagedResources<Item> pagedResources = restTemplate.getForObject(
 				catalogURL(), ItemPagedResources.class);
 		this.itemsCache = pagedResources.getContent();
 		return pagedResources.getContent();
+*/
+		return l;
 	}
 
 	private Collection<Item> getItemsCache() {
@@ -75,10 +80,10 @@ public class CatalogClient {
 		ServiceInstance instance = loadBalancer.choose("CATALOG");
 		if (useRibbon  && instance != null) {
 			url = "http://" + instance.getHost() + ":" + instance.getPort()
-			      + "/api/catalog/";
+			      + "/api/catalog";
 		} else {
 			url = "http://" + catalogServiceHost + ":" + catalogServicePort
-			      + "/api/catalog/";
+			      + "/api/catalog";
 		}
 		log.trace("Catalog: URL {} ", url);
 		return url;
@@ -86,7 +91,7 @@ public class CatalogClient {
 
 	//@HystrixCommand(fallbackMethod = "getOneCache", commandProperties = {@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "2")})
 	public Item getOne(long itemId) {
-		return restTemplate.getForObject(catalogURL() + itemId, Item.class);
+		return restTemplate.getForObject(catalogURL() + "/" + itemId, Item.class);
 	}
 
 	public Item getOneCache(long itemId) {

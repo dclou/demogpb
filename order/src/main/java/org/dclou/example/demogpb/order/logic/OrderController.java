@@ -55,8 +55,8 @@ class OrderController {
 			@ApiResponse(code = 404, message = "Not Found"),
 			@ApiResponse(code = 500, message = "Failure")})
 	public ModelAndView orderList() {
-			return new ModelAndView("orderlist", "orders",
-				orderRepository.findAll());
+			Iterable<Order> o = orderRepository.findAll();
+			return new ModelAndView("orderlist", "orders", o);
 	}
 
 	@RequestMapping(value = "/form", method = RequestMethod.GET)
