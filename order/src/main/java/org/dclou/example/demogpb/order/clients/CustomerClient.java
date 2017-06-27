@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -47,17 +49,16 @@ public class CustomerClient {
 	}
 
 	public boolean isValidCustomerId(long customerId) {
-		return true;
-//		try {
-//			ResponseEntity<String> entity = getRestTemplate().getForEntity(
-//					customerURL() + "/" + customerId, String.class);
-//			return entity.getStatusCode().is2xxSuccessful();
-//		} catch (final HttpClientErrorException e) {
-//			if (e.getStatusCode().value() == 404)
-//				return false;
-//			else
-//				throw e;
-//		}
+		try {
+			ResponseEntity<String> entity = getRestTemplate().getForEntity(
+					customerURL() + "/" + customerId, String.class);
+			return entity.getStatusCode().is2xxSuccessful();
+		} catch (final HttpClientErrorException e) {
+			if (e.getStatusCode().value() == 404)
+				return false;
+			else
+				throw e;
+		}
 	}
 
 	public RestTemplate getRestTemplate() {

@@ -132,7 +132,7 @@ public class CustomerWebIntegrationTest {
 
 	@Test
 	public void FetchRepositoryWorks() throws IOException {
-		String url = customerURL() + "/api/list";
+		String url = customerURL() + "/api/customer";
 		String body = restTemplate.getForObject(url, String.class);
 		Collection<Customer> items = new ObjectMapper().readValue(body, new TypeReference<Collection<Customer>>() { });
 
