@@ -3,6 +3,7 @@ package org.dclou.example.demogpb.order.logic;
 import org.dclou.example.demogpb.order.clients.CatalogClient;
 import org.dclou.example.demogpb.order.clients.CustomerClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service

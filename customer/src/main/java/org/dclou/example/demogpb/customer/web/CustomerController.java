@@ -1,5 +1,6 @@
 package org.dclou.example.demogpb.customer.web;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.dclou.example.demogpb.customer.Customer;
 import org.dclou.example.demogpb.customer.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CustomerController {
@@ -59,4 +62,10 @@ public class CustomerController {
 		return new ModelAndView("success");
 	}
 
+	@RequestMapping(value = "/api/customer", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public @ResponseBody
+	List<Customer> catalog() {
+		List<Customer> list = IteratorUtils.toList(customerRepository.findAll().iterator());
+		return list;
+	}
 }

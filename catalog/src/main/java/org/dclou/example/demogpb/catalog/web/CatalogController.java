@@ -1,5 +1,6 @@
 package org.dclou.example.demogpb.catalog.web;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.dclou.example.demogpb.catalog.Item;
 import org.dclou.example.demogpb.catalog.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 @Controller
@@ -65,6 +70,12 @@ public class CatalogController {
 	public ModelAndView delete(@PathVariable("id") long id) {
 		itemRepository.delete(id);
 		return new ModelAndView("success");
+	}
+
+	@RequestMapping(value = "/api/catalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public @ResponseBody List<Item> catalog() {
+        List<Item> list = IteratorUtils.toList(itemRepository.findAll().iterator());
+		return list;
 	}
 
 }

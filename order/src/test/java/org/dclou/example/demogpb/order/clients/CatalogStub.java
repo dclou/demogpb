@@ -1,6 +1,5 @@
-package org.dclou.example.demogpb.order.catalogstub;
+package org.dclou.example.demogpb.order.clients;
 
-import org.dclou.example.demogpb.order.clients.Item;
 import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.PagedResources.PageMetadata;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
-@RestController
+@RestController("CatalogClient")
 @RequestMapping("/catalog")
 @Profile("test")
 public class CatalogStub {

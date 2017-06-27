@@ -1,11 +1,7 @@
 package org.dclou.example.demogpb.customer;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-import java.util.stream.StreamSupport;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,7 +20,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.StreamSupport;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = CustomerApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -36,11 +44,14 @@ public class CustomerWebIntegrationTest {
 	@Value("${server.port}")
 	private int serverPort;
 
-	private RestTemplate restTemplate;
+	@Autowired
+	private TestRestTemplate restTemplate;
+
+	private Customer customerWolf;
 
 	private <T> T getForMediaType(Class<T> value, MediaType mediaType, String url) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(mediaType));
+		headers.setAccept(Arrays.asList(mediaType, MediaType.APPLICATION_XHTML_XML));
 
 		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 
@@ -49,21 +60,19 @@ public class CustomerWebIntegrationTest {
 		return resultEntity.getBody();
 	}
 
+	@Before
+	public void setup() {
+		customerWolf = customerRepository.findByName("Wolff").get(0);
+	}
+
 	@Test
 	public void IsCustomerReturnedAsHTML() {
 
-		Customer customerWolff = customerRepository.findByName("Wolff").get(0);
-
 		String body = getForMediaType(String.class, MediaType.TEXT_HTML,
-				customerURL() + customerWolff.getId() + ".html");
+				customerURL() + "/" + customerWolf.getId() + ".html");
 
 		assertThat(body, containsString("Wolff"));
 		assertThat(body, containsString("<div"));
-	}
-
-	@Before
-	public void setUp() {
-		restTemplate = new RestTemplate();
 	}
 
 	@Test
@@ -71,7 +80,7 @@ public class CustomerWebIntegrationTest {
 
 		Customer customerWolff = customerRepository.findByName("Wolff").get(0);
 
-		String url = customerURL() + "customer/" + customerWolff.getId();
+		String url = customerURL() + "/customer/" + customerWolff.getId();
 		Customer body = getForMediaType(Customer.class, MediaType.APPLICATION_JSON, url);
 
 		assertThat(body, equalTo(customerWolff));
@@ -96,7 +105,7 @@ public class CustomerWebIntegrationTest {
 	}
 
 	private String customerURL() {
-		return "http://localhost:" + serverPort + "/";
+		return "http://localhost:" + serverPort;
 	}
 
 	@Test
@@ -117,8 +126,17 @@ public class CustomerWebIntegrationTest {
 		map.add("city", "Linz");
 		map.add("email", "springjuergen@twitter.com");
 
-		restTemplate.postForObject(customerURL() + "form.html", map, String.class);
+		restTemplate.postForObject(customerURL() + "/form.html", map, String.class);
 		assertEquals(1, customerRepository.findByName("Hoeller").size());
+	}
+
+	@Test
+	public void FetchRepositoryWorks() throws IOException {
+		String url = customerURL() + "/api/list";
+		String body = restTemplate.getForObject(url, String.class);
+		Collection<Customer> items = new ObjectMapper().readValue(body, new TypeReference<Collection<Customer>>() { });
+
+		assertThat(items.size(), equalTo(3));
 	}
 
 }
