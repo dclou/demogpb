@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CatalogApplication.class, webEnvironment = WebEnvironment.NONE)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.NONE)
 @EnableWebSecurity
 @ActiveProfiles("test")
 public class RepositoryTest {

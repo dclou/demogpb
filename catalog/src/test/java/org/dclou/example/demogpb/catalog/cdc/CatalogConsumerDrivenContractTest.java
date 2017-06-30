@@ -1,6 +1,6 @@
 package org.dclou.example.demogpb.catalog.cdc;
 
-import org.dclou.example.demogpb.catalog.CatalogApplication;
+import org.dclou.example.demogpb.catalog.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CatalogApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 public class CatalogConsumerDrivenContractTest {
 

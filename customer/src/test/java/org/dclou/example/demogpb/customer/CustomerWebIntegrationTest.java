@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CustomerApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 public class CustomerWebIntegrationTest {
 
@@ -106,28 +106,6 @@ public class CustomerWebIntegrationTest {
 
 	private String customerURL() {
 		return "http://localhost:" + serverPort;
-	}
-
-	@Test
-	public void IsCustomerFormDisplayed() {
-		ResponseEntity<String> resultEntity = restTemplate.getForEntity(customerURL() + "/form.html", String.class);
-		assertTrue(resultEntity.getStatusCode().is2xxSuccessful());
-		assertTrue(resultEntity.getBody().contains("<form"));
-	}
-
-	@Test
-	@Transactional
-	public void IsSubmittedCustomerSaved() {
-		assertEquals(0, customerRepository.findByName("Hoeller").size());
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("firstname", "Juergen");
-		map.add("name", "Hoeller");
-		map.add("street", "Schlossallee");
-		map.add("city", "Linz");
-		map.add("email", "springjuergen@twitter.com");
-
-		restTemplate.postForObject(customerURL() + "/form.html", map, String.class);
-		assertEquals(1, customerRepository.findByName("Hoeller").size());
 	}
 
 	@Test

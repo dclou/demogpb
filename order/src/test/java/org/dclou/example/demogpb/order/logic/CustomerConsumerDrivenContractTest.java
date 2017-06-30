@@ -1,6 +1,6 @@
 package org.dclou.example.demogpb.order.logic;
 
-import org.dclou.example.demogpb.order.OrderServiceApplication;
+import org.dclou.example.demogpb.order.Application;
 import org.dclou.example.demogpb.order.clients.Customer;
 import org.dclou.example.demogpb.order.clients.CustomerClient;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = OrderServiceApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("test")
 public class CustomerConsumerDrivenContractTest {
