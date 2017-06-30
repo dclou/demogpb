@@ -10,28 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.StreamSupport;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -66,16 +54,6 @@ public class CustomerWebIntegrationTest {
 	}
 
 	@Test
-	public void IsCustomerReturnedAsHTML() {
-
-		String body = getForMediaType(String.class, MediaType.TEXT_HTML,
-				customerURL() + "/" + customerWolf.getId() + ".html");
-
-		assertThat(body, containsString("Wolff"));
-		assertThat(body, containsString("<div"));
-	}
-
-	@Test
 	public void IsCustomerReturnedAsJSON() {
 
 		Customer customerWolff = customerRepository.findByName("Wolff").get(0);
@@ -84,24 +62,6 @@ public class CustomerWebIntegrationTest {
 		Customer body = getForMediaType(Customer.class, MediaType.APPLICATION_JSON, url);
 
 		assertThat(body, equalTo(customerWolff));
-	}
-
-	@Test
-	public void IsCustomerListReturned() {
-
-		Iterable<Customer> customers = customerRepository.findAll();
-		assertTrue(
-				StreamSupport.stream(customers.spliterator(), false).noneMatch(c -> (c.getName().equals("Hoeller1"))));
-		ResponseEntity<String> resultEntity = restTemplate.getForEntity(customerURL() + "/list.html", String.class);
-		assertTrue(resultEntity.getStatusCode().is2xxSuccessful());
-		String customerList = resultEntity.getBody();
-		assertFalse(customerList.contains("Hoeller1"));
-		customerRepository
-				.save(new Customer("Juergen", "Hoeller1", "springjuergen@twitter.com", "Schlossallee", "Linz"));
-
-		customerList = restTemplate.getForObject(customerURL() + "/list.html", String.class);
-		assertTrue(customerList.contains("Hoeller1"));
-
 	}
 
 	private String customerURL() {
@@ -114,7 +74,7 @@ public class CustomerWebIntegrationTest {
 		String body = restTemplate.getForObject(url, String.class);
 		Collection<Customer> items = new ObjectMapper().readValue(body, new TypeReference<Collection<Customer>>() { });
 
-		assertThat(items.size(), equalTo(3));
+		assertThat(items.size(), equalTo(2));
 	}
 
 }

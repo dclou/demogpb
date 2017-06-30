@@ -43,15 +43,6 @@ public class CatalogWebIntegrationTest {
 		iPodNano = itemRepository.findByName("iPod nano").get(0);
 	}
 
-	@Test
-	public void IsItemReturnedAsHTML() {
-        String url = catalogURL() + "/" + iPodNano.getId() + ".html";
-        String body = getForMediaType(String.class, MediaType.TEXT_HTML, url);
-
-		assertThat(body, containsString("iPod nano"));
-		assertThat(body, containsString("<div"));
-	}
-
 	private String catalogURL() {
 		return "http://localhost:" + serverPort;
 	}
