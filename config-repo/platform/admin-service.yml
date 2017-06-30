@@ -1,4 +1,8 @@
 # DOCS http://codecentric.github.io/spring-boot-admin/1.5.0/#_hystrix_ui_module
+security:
+  user:
+    name: admin
+    password: admin@123
 
 server:
   context-path:
