@@ -3,20 +3,53 @@ info:
   description: подсистема "Идентификации и аутентификации"
 
 logging:
-  level.org.dclou.platform: TRACE
-  level.org.springframework.security: DEBUG
+  level:
+    org.dclou.platform: TRACE
+    org.springframework: INFO
+
+spring:
+  logging:
+    pattern:
+      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
+  instance:
+    hostname: ${spring.application.name}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 30
+    leaseExpirationDurationInSeconds: 60
+    metadata-map:
+      instanceId: ${spring.application.name}:${random.value}
+      management.context-path: ${server.context-path}${management.context-path}
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${eureka.hostname}/
+
+management:
+  port: ${server.port}
+  context-path: /manage
+  security:
+    enabled: false
 
 server:
   port: 9991
+  context-path: /auth
   session:
     cookie:
       name: JSESSIONIDAUTHSRV
+  use-forward-headers: true
 
 security:
+  sessions: always
   user:
     password: password
-
-
-eureka:
-  instance:
-    prefer-ip-address: false
+  basic:
+    enabled: false
+  ignored: ${management.context-path},${management.context-path}/**

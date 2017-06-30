@@ -1,40 +1,54 @@
-# DOCS http://codecentric.github.io/spring-boot-admin/1.5.0/#_hystrix_ui_module
-
-server:
-  context-path:
-  port: ${PORT:7070}
-
 info:
   version: 1.5.0
   description: подсистема "Администрирования и управления"
 
+server:
+  context-path:
+  port: 7070
+  ssl:
+    enabled: false
+  session:
+    cookie:
+      name: JSESSIONIDADMINSRV
+  use-forward-headers: true
+
 eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
   instance:
-      prefer-ip-address: false
+    hostname: ${spring.application.name}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 30
+    leaseExpirationDurationInSeconds: 60
+    metadata-map:
+      instanceId: ${spring.application.name}:${random.value}
+      management.context-path: ${server.context-path}${management.context-path}
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${eureka.hostname}/
 
 management:
-  context-path: /admin/mgmt
+  port: ${server.port}
+  security.enabled: false
+  context-path: /manage
 
-#management.context-path: /mgmt
-#endpoints.health.path: /health
-
-zuul:
-  ignoredServices: '*'
-  host:
-    connect-timeout-millis: 20000
-    socket-timeout-millis: 20000
-  routes:
-    turbine:
-      path: /admin/api/turbine/stream/**
-      url: http://turbine-service:8485/turbine.stream
+turbine:
+  aggregator:
+    clusterConfig: ORDER,CUSTOMER,CATALOG
+  appConfig: order,customer,catalog
+  instanceUrlSuffix: /mgmt/hystrix.stream
 
 spring:
   boot:
     admin:
       turbine:
-        clusters: default
+        clusters: ORDER,CUSTOMER,CATALOG
         enabled: true
-        location: http://turbine-service:8485/turbine.stream
       context-path: /admin
       routes:
         endpoints: env,metrics,trace,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream

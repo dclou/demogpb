@@ -1,71 +1,71 @@
-#Common DEFAULT settings
-spring:
-  cloud:
-    inetutils:
-      preferred-networks:
-        - 10.0
-      ignored-interfaces:
-        - eth2
-        - eth2@*
-  logging:
-    pattern:
-      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
-
-  sleuth:
-    enabled: true
-    stream:
-      enabled: true
-    sampler:
-      percentage: 1
-
-  # sleuth-zipkin async messaging
-  rabbitmq:
-    addresses: rabbit-mon
-    username: admin
-    password: admin
-    virtual-host: rabbit-mon
-
-encrypt:
-  failOnError: false
-eureka:
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    healthcheck:
-          enabled: true
-    serviceUrl:
-      defaultZone: http://discovery-service:8761/eureka/
-  instance:
-      hostname: ${spring.application.name}
-      prefer-ip-address: true
-      lease-expiration-duration-in-seconds: 60
-      lease-renewal-interval-in-seconds: 30
-      securePortEnabled: false
-      nonSecurePortEnabled: true
-      metadataMap:
-        management.context-path: ${management.context-path}
-        management.port: ${management.port}
-        instanceId: ${spring.application.name}:${random.value}
-      homePageUrl: http://${eureka.instance.hostname}:${management.port}/
-      status-page-url-path: ${management.context-path}/info
-      health-check-url-path: ${management.context-path}/health
-management:
-  port: ${server.port}
-  security.enabled: false
-  context-path: /mgmt
-
-# Turn off the basic endpoint security (helps with [Registry]
-security:
-  basic:
-    enabled: false
-  ignored: ${management.context-path},${management.context-path}/**,/mgmt/hystrix.stream
-
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          strategy: THREAD
-          thread:
-            timeoutInMilliseconds: 30000
-
+##Common DEFAULT settings
+#spring:
+#  cloud:
+#    inetutils:
+#      preferred-networks:
+#        - 10.0
+#      ignored-interfaces:
+#        - eth2
+#        - eth2@*
+#  logging:
+#    pattern:
+#      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+#
+#  sleuth:
+#    enabled: true
+#    stream:
+#      enabled: true
+#    sampler:
+#      percentage: 1
+#
+#  # sleuth-zipkin async messaging
+#  rabbitmq:
+#    addresses: rabbit-mon
+#    username: admin
+#    password: admin
+#    virtual-host: rabbit-mon
+#
+#encrypt:
+#  failOnError: false
+#eureka:
+#  client:
+#    registerWithEureka: true
+#    fetchRegistry: true
+#    healthcheck:
+#          enabled: true
+#    serviceUrl:
+#      defaultZone: http://discovery-service:8761/eureka/
+#  instance:
+#      hostname: ${spring.application.name}
+#      prefer-ip-address: true
+#      lease-expiration-duration-in-seconds: 60
+#      lease-renewal-interval-in-seconds: 30
+#      securePortEnabled: false
+#      nonSecurePortEnabled: true
+#      metadataMap:
+#        management.context-path: ${management.context-path}
+#        management.port: ${management.port}
+#        instanceId: ${spring.application.name}:${random.value}
+#      homePageUrl: http://${eureka.instance.hostname}:${management.port}/
+#      status-page-url-path: ${management.context-path}/info
+#      health-check-url-path: ${management.context-path}/health
+#management:
+#  port: ${server.port}
+#  security.enabled: false
+#  context-path: /mgmt
+#
+## Turn off the basic endpoint security (helps with [Registry]
+#security:
+#  basic:
+#    enabled: false
+#  ignored: ${management.context-path},${management.context-path}/**,/mgmt/hystrix.stream
+#
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          strategy: THREAD
+#          thread:
+#            timeoutInMilliseconds: 30000
+#
