@@ -1,16 +1,20 @@
 info:
   version: 1.0.0
   component: микросервис "Управления заказами"
-  
+
 logging:
-  level.org.dclou.example.demogpb: TRACE
-  level.org.springframework.security: DEBUG
+  level:
+    org.dclou.example.demogpb: TRACE
+    org.springframework.security: DEBUG
 
 spring:
   logging:
     pattern:
       console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
   sleuth:
+    enabled: true
+    stream:
+      enabled: true
     sampler:
       percentage: 1
   rabbitmq:
@@ -42,12 +46,19 @@ eureka:
       defaultZone: http://discovery-service:8761/eureka/
   instance:
     hostname: ${spring.application.name}
-    metadataMap.instanceId: ${spring.application.name}:${random.value}
     prefer-ip-address: true
-    lease-expiration-duration-in-seconds: 60
-    lease-renewal-interval-in-seconds: 30
+    leaseRenewalIntervalInSeconds: 30
+    leaseExpirationDurationInSeconds: 60
+    metadata-map:
+      instanceId: ${spring.application.name}:${random.value}
+      management.context-path: ${server.context-path}${management.context-path}
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${eureka.hostname}/
 
 management:
+  port: ${server.port}
+  context-path: /manage
   security:
     enabled: false
   trace:
@@ -55,9 +66,11 @@ management:
 
 server:
   port: 8083
+  context-path: /order
   session:
     cookie:
       name: JSESSIONIDORDERSRV
+  use-forward-headers: true
 
 ribbon:
   eureka:
@@ -70,13 +83,16 @@ oauth2settings:
     clientSecret: 123456
     authenticationScheme: query
     clientAuthenticationScheme: header
-    accessTokenUri: http://auth-service:9991/oauth/token
-    userAuthorizationUri: http://auth.zotona.com/oauth/authorize
-    preEstablishedRedirectUri: http://demo.zotona.com/login/order
-    registeredRedirectUri: http://demo.zotona.com/login/order
+    accessTokenUri: http://gateway-service:8080/auth/oauth/token
+#    userAuthorizationUri: http://dripka.com/auth/oauth/authorize
+#    preEstablishedRedirectUri: http://dripka.com/order/login/order
+#    registeredRedirectUri: http://dripka.com/order/login/order
+    userAuthorizationUri: http://api.zotona.com/auth/oauth/authorize
+    preEstablishedRedirectUri: http://api.zotona.com/order/login/order
+    registeredRedirectUri: http://api.zotona.com/order/login/order
     useCurrentUri: false
   resource:
-    userInfoUri: http://auth-service:9991/api/user/principal.json
+    userInfoUri: http://gateway-service:8080/auth/api/user/principal.json
     preferTokenInfo: true
 
 security:

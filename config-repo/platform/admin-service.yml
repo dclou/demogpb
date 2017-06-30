@@ -4,23 +4,44 @@ security:
     name: admin
     password: admin@123
 
-server:
-  context-path:
-  port: ${PORT:7070}
-
 info:
   version: 1.5.0
   description: подсистема "Администрирования и управления"
 
+server:
+  context-path:
+  port: ${PORT:7070}
+  ssl:
+    enabled: false
+  session:
+    cookie:
+      name: JSESSIONIDADMINSRV
+  use-forward-headers: true
+
 eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
   instance:
-      prefer-ip-address: false
+    hostname: ${spring.application.name}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 30
+    leaseExpirationDurationInSeconds: 60
+    metadata-map:
+      instanceId: ${spring.application.name}:${random.value}
+      management.context-path: ${server.context-path}${management.context-path}
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${eureka.hostname}/
 
 management:
-  context-path: /admin/mgmt
-
-#management.context-path: /mgmt
-#endpoints.health.path: /health
+  port: ${server.port}
+  security.enabled: false
+  context-path: /manage
 
 turbine:
   aggregator:

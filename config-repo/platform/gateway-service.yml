@@ -5,59 +5,92 @@ info:
 server:
   context-path:
   port: 8080
-
   ssl:
     enabled: false
-    #key-store: classpath:server.jks
-    #key-store-password: password
-    #key-password: password
-    # Problem with trust-store properties?
-    #
-    # Instead use: java -Djavax.net.debug=ssl -Djavax.net.ssl.trustStore=src/main/resources/truststore.jks -Djavax.net.ssl.trustStorePassword=password -jar build/libs/*.jar
-    #
-    # trust-store: classpath:truststore.jks
-    #trust-store: src/main/resources/truststore.jks
-    #trust-store-password: password
+  session:
+    cookie:
+      name: JSESSIONIDAPISRV
+  use-forward-headers: true
 
 eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
   instance:
-    prefer-ip-address: false
+    hostname: ${spring.application.name}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 30
+    leaseExpirationDurationInSeconds: 60
+    metadata-map:
+      instanceId: ${spring.application.name}:${random.value}
+      management.context-path: ${server.context-path}${management.context-path}
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${eureka.hostname}/
 
 zuul:
-  ignoredServices: '*'
+  add-proxy-headers: true
+  ignored-services: '*'
   host:
     connect-timeout-millis: 20000
     socket-timeout-millis: 20000
-    
   routes:
     catalog:
+      serviceId: catalog
       path: /catalog/**
+      stripPrefix: false
       sensitiveHeaders:
+      ribbon:
+        ReadTimeout: 15000
     customer:
-      path: /customer-service/**
+      serviceId: customer
+      path: /customer/**
+      stripPrefix: false
       sensitiveHeaders:
+      ribbon:
+        ReadTimeout: 15000
     order:
-      path: /order-service/**
+      serviceId: order
+      path: /order/**
+      stripPrefix: false
       sensitiveHeaders:
-    auth-service:
-      path: /auth-service/**
+      ribbon:
+        ReadTimeout: 15000
+    auth:
+      serviceId: auth-service
+      path: /auth/**
+      stripPrefix: false
       sensitiveHeaders:
-    admin-service:
-      path: /admin-service/**
-      sensitiveHeaders:
-    zipkin-service:
-      path: /zipkin-service/**
-      sensitiveHeaders:
-  add-proxy-headers: true
+      ribbon:
+        ReadTimeout: 15000
+
+ribbon:
+  eager-load:
+    enabled: true
+    clients:
+      - catalog
+      - customer
+      - order
+      - auth
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 15000
+
+management:
+  port: ${server.port}
+  security.enabled: false
+  context-path: /manage
 
 security:
-  ignored: /auth-service/oauth/**
   basic:
     enabled: false
-  oauth2:
-    resource:
-      jwt:
-        keyValue: |
-          -----BEGIN PUBLIC KEY-----
-          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAimUKhvBhsoeSM3HkIOP/Y3RXjvonBlZnLj8oO92TyAKG53lmAoK0wZ5MTZPsfrOz2Z7CeAp6mPhUANX2RUoFwVzG7rJmgWyqGmGFNBmtYL+uVqQ80TzWi5zyzXTxgVMWiCqqw/u4AeE1qhN8chnGwhUBnpgPAPd8v57mIwg0n5JxjdYe7pgHlpvt8ZXTXd1KBxB5K7WjNlCfMf75ZEeBaplxsSfJUwKbnHQKWcY3NnpjkVR8y4jviAbkOHmGMaliM7fcsLzbosBUPDQuNlvYdjPBRfH6MMPeXRW6On3u0Um9wIYmkQS+AEgHCq4UuLOnTTqqxnGkwFYeMAAXmRyMtQIDAQAB
-          -----END PUBLIC KEY-----
+  ignored: ${management.context-path},${management.context-path}/**

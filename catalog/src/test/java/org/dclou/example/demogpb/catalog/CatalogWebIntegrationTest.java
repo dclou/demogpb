@@ -1,18 +1,24 @@
 package org.dclou.example.demogpb.catalog;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -31,18 +37,18 @@ public class CatalogWebIntegrationTest {
 
 	private Item iPodNano;
 
-	private RestTemplate restTemplate;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
 	@Before
 	public void setup() {
 		iPodNano = itemRepository.findByName("iPod nano").get(0);
-		restTemplate = new RestTemplate();
 	}
 
 	@Test
 	public void IsItemReturnedAsHTML() {
-		String url = catalogURL() + "/" + iPodNano.getId() + ".html";
-		String body = getForMediaType(String.class, MediaType.TEXT_HTML, url);
+        String url = catalogURL() + "/" + iPodNano.getId() + ".html";
+        String body = getForMediaType(String.class, MediaType.TEXT_HTML, url);
 
 		assertThat(body, containsString("iPod nano"));
 		assertThat(body, containsString("<div"));
@@ -69,18 +75,27 @@ public class CatalogWebIntegrationTest {
 		assertThat(body, containsString("<div>"));
 	}
 
-	@Test
-	public void SearchWorks() {
-		String url = catalogURL() + "/searchByName.html?query=iPod";
-		String body = restTemplate.getForObject(url, String.class);
+    @Test
+    public void SearchWorks() {
+        String url = catalogURL() + "/searchByName.html?query=iPod";
+        String body = restTemplate.getForObject(url, String.class);
 
-		assertThat(body, containsString("iPod nano"));
-		assertThat(body, containsString("<div"));
-	}
+        assertThat(body, containsString("iPod nano"));
+        assertThat(body, containsString("<div"));
+    }
 
-	private <T> T getForMediaType(Class<T> value, MediaType mediaType, String url) {
+    @Test
+    public void FetchRepositoryWorks() throws IOException {
+        String url = catalogURL() + "/api/catalog";
+        String body = restTemplate.getForObject(url, String.class);
+        Collection<Item> items = new ObjectMapper().readValue(body, new TypeReference<Collection<Item>>() { });
+
+        assertThat(items.size(), equalTo(4));
+    }
+
+    private <T> T getForMediaType(Class<T> value, MediaType mediaType, String url) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(mediaType));
+		headers.setAccept(Arrays.asList(mediaType, MediaType.APPLICATION_XHTML_XML));
 
 		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 

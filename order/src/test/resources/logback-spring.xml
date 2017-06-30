@@ -9,17 +9,9 @@
         </encoder>
     </appender>
 
-    <appender name="FLUENT" class="ch.qos.logback.more.appenders.DataFluentAppender">
-        <tag>${appName}</tag>
-        <label>normal</label>
-        <remoteHost>fluentd</remoteHost>
-        <port>24224</port>
-    </appender>
-
     <root>
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FLUENT"/>
     </root>
 
 </configuration>

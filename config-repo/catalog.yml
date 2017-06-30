@@ -3,14 +3,18 @@ info:
   component: микросервис "Каталог товаров"
 
 logging:
-  level.org.dclou.example.demogpb: TRACE
-  level.org.springframework.security: DEBUG
+  level:
+    org.dclou.example.demogpb: TRACE
+    org.springframework.security: DEBUG
 
 spring:
   logging:
     pattern:
       console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
   sleuth:
+    enabled: true
+    stream:
+      enabled: true
     sampler:
       percentage: 1
   rabbitmq:
@@ -32,6 +36,16 @@ spring:
 encrypt:
   failOnError: false
 
+server:
+  context-path: /catalog
+  port: 8081
+  ssl:
+    enabled: false
+  session:
+    cookie:
+      name: JSESSIONIDCATALOGSRV
+  use-forward-headers: true
+
 eureka:
   client:
     registerWithEureka: true
@@ -42,22 +56,22 @@ eureka:
       defaultZone: http://discovery-service:8761/eureka/
   instance:
     hostname: ${spring.application.name}
-    metadataMap.instanceId: ${spring.application.name}:${random.value}
     prefer-ip-address: true
-    lease-expiration-duration-in-seconds: 60
-    lease-renewal-interval-in-seconds: 30
+    leaseRenewalIntervalInSeconds: 30
+    leaseExpirationDurationInSeconds: 60
+    metadata-map:
+      instanceId: ${spring.application.name}:${random.value}
+      management.context-path: ${server.context-path}${management.context-path}
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${eureka.hostname}/
 
 management:
-  security:
-    enabled: false
+  port: ${server.port}
+  security.enabled: false
+  context-path: /manage
   trace:
     include: request_headers,response_headers,cookies,authorization_header,errors,path_info,path_translated,context_path,user_principal,parameters,query_string,auth_type,remote_address,session_id,remote_user
-
-server:
-  port: 8081
-  session:
-    cookie:
-      name: JSESSIONIDCATALOGSRV
 
 ribbon:
   eureka:

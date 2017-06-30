@@ -5,6 +5,7 @@ import org.dclou.example.demogpb.order.clients.CatalogClient;
 import org.dclou.example.demogpb.order.clients.Customer;
 import org.dclou.example.demogpb.order.clients.CustomerClient;
 import org.dclou.example.demogpb.order.clients.Item;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,26 +13,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
 import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = OrderTestApp.class, webEnvironment = WebEnvironment.DEFINED_PORT)
+@DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("test")
 public class OrderWebIntegrationTest {
 
-	private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+	private TestRestTemplate restTemplate;
 
 	@Value("${server.port}")
 	private long serverPort;
@@ -50,21 +56,22 @@ public class OrderWebIntegrationTest {
 	private Customer customer;
 
 	@Before
-	public void setup() {
-		item = catalogClient.findAll().iterator().next();
-		customer = customerClient.findAll().iterator().next();
+	public void setup() throws Exception {
+        item = catalogClient.findAll().iterator().next();
+        customer = customerClient.findAll().iterator().next();
 		assertEquals("Eberhard", customer.getFirstname());
 	}
 
-	@Test
+    @Test
 	public void IsOrderListReturned() {
 		try {
 			Iterable<Order> orders = orderRepository.findAll();
 			assertTrue(StreamSupport.stream(orders.spliterator(), false)
-					.noneMatch(o -> (o.getCustomerId() == customer.getCustomerId())));
-			ResponseEntity<String> resultEntity = restTemplate.getForEntity(orderURL(), String.class);
-			assertTrue(resultEntity.getStatusCode().is2xxSuccessful());
-			String orderList = resultEntity.getBody();
+                    .noneMatch(o -> (o.getCustomerId() == customer.getCustomerId())));
+			//ResponseEntity<String> resultEntity = restTemplate.getForEntity(orderURL(), String.class);
+            String orderList = restTemplate.getForObject(orderURL(), String.class);
+			//assertTrue(resultEntity.getStatusCode().is2xxSuccessful());
+			//String orderList = resultEntity.getBody();
 			assertFalse(orderList.contains("Eberhard"));
 			Order order = new Order(customer.getCustomerId());
 			order.addLine(42, item.getItemId());

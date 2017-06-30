@@ -1,0 +1,5 @@
+spring:
+  sleuth:
+    enabled: false
+    stream:
+      enabled: false

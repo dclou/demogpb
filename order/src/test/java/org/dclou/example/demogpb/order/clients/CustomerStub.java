@@ -1,4 +1,4 @@
-package org.dclou.example.demogpb.order.customerstub;
+package org.dclou.example.demogpb.order.clients;
 
 import org.dclou.example.demogpb.order.clients.Customer;
 import org.springframework.context.annotation.Profile;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
-@RestController
+@RestController("CustomerClient")
 @RequestMapping("/customer")
 @Profile("test")
 public class CustomerStub {
