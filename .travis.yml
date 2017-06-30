@@ -25,4 +25,4 @@ deploy:
   skip_cleanup: true
   script: deploy/deploy.sh 178.159.32.129
   on:
-    branch: release
+    branch: release-1.0.0
