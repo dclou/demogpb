@@ -85,7 +85,7 @@ public class OrderTestApp {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/api/catalog")
+                                .withPath("/catalog/api/catalog")
                 )
                 .respond(
                         response()
@@ -120,7 +120,7 @@ public class OrderTestApp {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/api/catalog/1")
+                                .withPath("/catalog/api/catalog/1")
                 )
                 .respond(
                         response()
@@ -143,7 +143,7 @@ public class OrderTestApp {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/api/customer")
+                                .withPath("/customer/api/customer")
                 )
                 .respond(
                         response()
@@ -182,7 +182,7 @@ public class OrderTestApp {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/api/customer/1")
+                                .withPath("/customer/api/customer/1")
                 )
                 .respond(
                         response()
@@ -203,7 +203,7 @@ public class OrderTestApp {
                 .when(
                         request()
                                 .withMethod("GET")
-                                .withPath("/api/customer/2")
+                                .withPath("/customer/api/customer/2")
                 )
                 .respond(
                         response()
