@@ -41,7 +41,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 //.antMatcher("/api/**")
                 .antMatcher("/**")
                 .authorizeRequests()
-                .antMatchers("/mgmt/**").permitAll()
+                .antMatchers("/manage/**").permitAll()
                 .anyRequest().hasAuthority("FOO_READ");
     }
 

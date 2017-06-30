@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -25,7 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = CatalogApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class CatalogWebIntegrationTest {
 
@@ -65,24 +63,6 @@ public class CatalogWebIntegrationTest {
 
 		assertThat(body, equalTo(iPodNano));
 	}
-
-	@Test
-	public void FormReturned() {
-		String url = catalogURL() + "/searchForm.html";
-		String body = getForMediaType(String.class, MediaType.TEXT_HTML, url);
-
-		assertThat(body, containsString("<form"));
-		assertThat(body, containsString("<div>"));
-	}
-
-    @Test
-    public void SearchWorks() {
-        String url = catalogURL() + "/searchByName.html?query=iPod";
-        String body = restTemplate.getForObject(url, String.class);
-
-        assertThat(body, containsString("iPod nano"));
-        assertThat(body, containsString("<div"));
-    }
 
     @Test
     public void FetchRepositoryWorks() throws IOException {

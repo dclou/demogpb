@@ -80,10 +80,10 @@ public class CatalogClient {
 		ServiceInstance instance = loadBalancer.choose("CATALOG");
 		if (useRibbon  && instance != null) {
 			url = "http://" + instance.getHost() + ":" + instance.getPort()
-			      + "/api/catalog";
+			      + "/catalog/api/catalog";
 		} else {
 			url = "http://" + catalogServiceHost + ":" + catalogServicePort
-			      + "/api/catalog";
+			      + "/catalog/api/catalog";
 		}
 		log.trace("Catalog: URL {} ", url);
 		return url;

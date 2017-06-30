@@ -84,12 +84,12 @@ oauth2settings:
     authenticationScheme: query
     clientAuthenticationScheme: header
     accessTokenUri: http://gateway-service:8080/auth/oauth/token
-#    userAuthorizationUri: http://dripka.com/auth/oauth/authorize
-#    preEstablishedRedirectUri: http://dripka.com/order/login/order
-#    registeredRedirectUri: http://dripka.com/order/login/order
-    userAuthorizationUri: http://api.zotona.com/auth/oauth/authorize
-    preEstablishedRedirectUri: http://api.zotona.com/order/login/order
-    registeredRedirectUri: http://api.zotona.com/order/login/order
+    userAuthorizationUri: http://dripka.com/auth/oauth/authorize
+    preEstablishedRedirectUri: http://dripka.com/order/login/order
+    registeredRedirectUri: http://dripka.com/order/login/order
+#    userAuthorizationUri: http://api.zotona.com/auth/oauth/authorize
+#    preEstablishedRedirectUri: http://api.zotona.com/order/login/order
+#    registeredRedirectUri: http://api.zotona.com/order/login/order
     useCurrentUri: false
   resource:
     userInfoUri: http://gateway-service:8080/auth/api/user/principal.json
