@@ -17,6 +17,7 @@ spring:
       enabled: true
     sampler:
       percentage: 1
+    rxjava.schedulers.hook.enabled: false
 
   # sleuth-zipkin async messaging
   rabbitmq:

@@ -23,31 +23,29 @@ spring:
     enabled: false
     stream:
       enabled: false
+    hystrix:
+      strategy:
+        enabled: false
+
   rabbitmq:
     addresses: rabbit-mon
     username: admin
     password: admin
     virtual-host: rabbit-mon
 
-sleuth:
-   # not use sleuth stream to trace zipkin server itself
-    enabled: false
-    #refer to org.springframework.cloud.sleuth.instrument.hystrix.SleuthHystrixAutoConfiguration.java
-    hystrix:
-      strategy:
-        enabled: false
-
 zipkin:
   storage:
-    type: mem #mysql #mem
+   type: elasticsearch
+   elasticsearch:
+    cluster: elasticsearch
+    hosts: http://elasticsearch:9200
+    index: zipkin
+    index_shards: 5
+    replica: 1
 
-eureka:
-  instance:
-    prefer-ip-address: false
 
 # Give the application a PORT default (ignored by PCF, will deploy on 80)
 server:
   context-path:
   port: 9411
-
 
