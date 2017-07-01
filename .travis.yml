@@ -3,7 +3,7 @@ sudo: required
 branches:
   only:
   - master
-  - release
+  - release-1.0.0
 
 services:
   - docker
