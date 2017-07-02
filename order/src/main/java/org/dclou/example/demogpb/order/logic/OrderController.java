@@ -1,5 +1,6 @@
 package org.dclou.example.demogpb.order.logic;
 
+import com.codahale.metrics.annotation.Gauge;
 import io.swagger.annotations.*;
 import org.dclou.example.demogpb.order.clients.CatalogClient;
 import org.dclou.example.demogpb.order.clients.Customer;
@@ -27,7 +28,7 @@ class OrderController {
 	private CatalogClient catalogClient;
 
 	@Autowired
-	private OrderController(OrderService orderService,
+	public OrderController(OrderService orderService,
 			OrderRepository orderRepository, CustomerClient customerClient,
 			CatalogClient catalogClient) {
 		this.orderRepository = orderRepository;
@@ -103,6 +104,7 @@ class OrderController {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@Gauge(name = "new.order")
 	public ModelAndView post(Order order) {
 		order = orderService.order(order);
 		return  new ModelAndView("redirect:/");

@@ -99,3 +99,6 @@ security:
   sessions: always
   user:
     password: password
+
+
+endpoints.prometheus.id: prometheus
