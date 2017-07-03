@@ -53,7 +53,7 @@ eureka:
 management:
   port: ${server.port}
   security.enabled: false
-  context-path: ${server.contextPath}/manage
+  context-path: ${server.context-path}/manage
 
 # Turn off the basic endpoint security (helps with [Registry]
 security:
