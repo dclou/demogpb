@@ -44,22 +44,24 @@ eureka:
       securePortEnabled: false
       nonSecurePortEnabled: true
       metadataMap:
-        management.context-path: ${management.context-path}
+        management.context-path: ${server.context-path}${management.context-path}
         management.port: ${management.port}
         instanceId: ${spring.application.name}:${random.value}
       homePageUrl: http://${eureka.instance.hostname}:${management.port}/
       status-page-url-path: ${management.context-path}/info
       health-check-url-path: ${management.context-path}/health
+
 management:
   port: ${server.port}
   security.enabled: false
-  context-path: ${server.context-path}/manage
+  context-path: /manage
 
 # Turn off the basic endpoint security (helps with [Registry]
 security:
   basic:
     enabled: false
   ignored: ${management.context-path},${management.context-path}/**
+
 hystrix:
   command:
     default:
