@@ -29,11 +29,11 @@ management:
   health:
     redis.enabled: false
 
-turbine:
-  aggregator:
-    clusterConfig: ORDER,CUSTOMER,CATALOG
-  appConfig: order,customer,catalog
-  instanceUrlSuffix: /manage/hystrix.stream
+#turbine:
+#  aggregator:
+#    clusterConfig: ORDER,CUSTOMER,CATALOG
+#  appConfig: order,customer,catalog
+#  instanceUrlSuffix: /manage/hystrix.stream
 
 spring:
   boot:
