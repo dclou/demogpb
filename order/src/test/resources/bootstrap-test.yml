@@ -10,9 +10,6 @@ spring:
   cloud:
     config:
       enabled: false
-      uri:
-      #profile: production
-      #label: master
       discovery:
-              enabled: false
-              service-id: config-service
+        enabled: false
+        service-id: config-service
