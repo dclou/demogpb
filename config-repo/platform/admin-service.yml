@@ -26,6 +26,8 @@ management:
   port: ${server.port}
   security.enabled: false
   context-path: /manage
+  health:
+    redis.enabled: false
 
 turbine:
   aggregator:
