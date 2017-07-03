@@ -13,24 +13,8 @@ server:
   use-forward-headers: true
 
 eureka:
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    healthcheck:
-      enabled: true
-    serviceUrl:
-      defaultZone: http://discovery-service:8761/eureka/
   instance:
-    hostname: ${spring.application.name}
-    prefer-ip-address: true
-    leaseRenewalIntervalInSeconds: 30
-    leaseExpirationDurationInSeconds: 60
-    metadata-map:
-      instanceId: ${spring.application.name}:${random.value}
-      management.context-path: ${server.context-path}${management.context-path}
-    statusPageUrlPath: ${server.context-path}${management.context-path}/info
-    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
-    homePageUrlPath: ${eureka.hostname}/
+      prefer-ip-address: false
 
 zuul:
   add-proxy-headers: true

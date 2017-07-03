@@ -49,3 +49,6 @@ server:
   context-path:
   port: 9411
 
+eureka:
+  instance:
+      prefer-ip-address: false
