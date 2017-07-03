@@ -38,10 +38,6 @@ encrypt:
 
 
 management:
-  port: ${server.port}
-  context-path: /manage
-  security:
-    enabled: false
   trace:
     include: request_headers,response_headers,cookies,authorization_header,errors,path_info,path_translated,context_path,user_principal,parameters,query_string,auth_type,remote_address,session_id,remote_user
 

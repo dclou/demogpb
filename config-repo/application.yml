@@ -53,14 +53,13 @@ eureka:
 management:
   port: ${server.port}
   security.enabled: false
-  context-path: /manage
+  context-path: ${server.contextPath}/manage
 
 # Turn off the basic endpoint security (helps with [Registry]
 security:
   basic:
     enabled: false
-  ignored: ${management.context-path},${management.context-path}/**,/mgmt/hystrix.stream
-
+  ignored: ${management.context-path},${management.context-path}/**
 hystrix:
   command:
     default:
@@ -69,4 +68,5 @@ hystrix:
           strategy: THREAD
           thread:
             timeoutInMilliseconds: 30000
+
 
