@@ -37,29 +37,31 @@
 			(swarm) |- (dclou)
 		;
 		\node(app)[label=above:Бизнес-сервисы, below = of workers, draw, dotted, rounded corners, matrix,yshift=-3em, row sep = 1ex]{
+			\node(configd)[block, minimum width = 5em]{Config Demo}; \\
 			\node(order)[block, minimum width = 5em]{Order}; \\
 			\node(catalog)[block, minimum width = 5em]{Catalog}; \\
 			\node(customer)[block, minimum width = 5em]{Customer}; \\
 		};
 		
 		\node(platform)[label=above:Сервисы платформы, below = of masters, draw, dotted, rounded corners, matrix,yshift=-3em, row sep = 1ex]{
+			\node(configp)[block, minimum width = 5em]{Config Platform}; \\
 			\node(auth)[block, minimum width = 5em]{Auth}; \\
 			\node(admin)[block, minimum width = 5em]{Admin}; \\
 			\node(kibana)[block, minimum width = 5em]{Kibana}; \\
-			\node(config)[block, minimum width = 5em]{Config}; \\
 			\node(gateway)[block, minimum width = 5em]{Gateway}; \\
 			\node(discovery)[block, minimum width = 5em]{Discovery}; \\
 			\node(portainer)[block, minimum width = 5em]{Portainer}; \\
 		};
 	
 		\path[draw, color=green, thick]
+			(dclou) |- ([yshift=-1ex]configd.west)
 			(dclou) |- ([yshift=-1ex]order.west)
 			(dclou) |- ([yshift=-1ex]catalog.west)
 			(dclou) |- ([yshift=-1ex]customer.west)
+			(dclou) |- ([yshift=-1ex]configp.east)
 			(dclou) |- ([yshift=-1ex]auth.east)
 			(dclou) |- ([yshift=-1ex]admin.east)
 			(dclou) |- ([yshift=-1ex]kibana.east)
-			(dclou) |- ([yshift=-1ex]config.east)
 			(dclou) |- ([yshift=-1ex]gateway.east)
 			(dclou) |- ([yshift=-1ex]discovery.east)
 			(dclou) |- ([yshift=-1ex]portainer.east)
